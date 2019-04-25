@@ -23,6 +23,14 @@ $ node index.js
 $ TOMORROW=1 node index.js
 ```
 
+新建 `data/store.json` 文件
+
+```json
+{
+
+}
+```
+
 ## LICENSE
 
 MIT
