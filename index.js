@@ -1,6 +1,6 @@
 const Octokit = require('@octokit/rest');
-const { get: getStore, set: setStore } = require('./store');
-const { addNotes } = require('./taskpaper');
+const { get: getStore, set: setStore } = require('./lib/store');
+const { addNotes } = require('./lib/taskpaper');
 const { githubToken } = require('./config');
 
 const store = getStore();
@@ -75,7 +75,7 @@ async function fetchReleases() {
 }
 
 async function fetchFavoriteTweets() {
-  const tweets = await require('./twitter')();
+  const tweets = await require('./lib/twitter')();
   const notes = [];
   tweets.forEach(({ text, id_str }) => {
     if (!store.twitter.favTweets[id_str]) {
