@@ -1,7 +1,7 @@
 const Octokit = require('@octokit/rest');
 const { get: getStore, set: setStore } = require('./lib/store');
 const { addNotes } = require('./lib/taskpaper');
-const { githubToken } = require('./config');
+const { githubToken, issuesConfig, starredConfig } = require('./config');
 
 const store = getStore();
 const octokit = new Octokit({
@@ -9,10 +9,7 @@ const octokit = new Octokit({
 });
 
 async function fetchStarred() {
-  const { data } = await octokit.activity.listReposStarredByUser({
-    username: 'sorrycc',
-    per_page: 20,
-  });
+  const { data } = await octokit.activity.listReposStarredByUser(starredConfig);
   const notes = [];
   data.forEach(({ full_name, description, html_url }) => {
     if (!store.starred) {
@@ -30,22 +27,20 @@ async function fetchStarred() {
 }
 
 async function fetchReadingIssues() {
-  const { data } = await octokit.issues.listForRepo({
-    owner: 'sorrycc',
-    repo: 'reading',
-    state: 'open',
-  });
+  const { data } = await octokit.issues.listForRepo(issuesConfig);
+
   const notes = [];
   data.forEach(({ title, id, body }) => {
-    if (!store.reading) {
-      store.reading = { issues: {} };
+    if (!store[issuesConfig.repo]) {
+      store[issuesConfig.repo] = { issues: {} };
     }
-    if (!store.reading.issues[id]) {
-      store.reading.issues[id] = 1;
-      const url = body.match(/<a.+?>(.+)<\/a>/)[1];
+    if (!store[issuesConfig.repo].issues[id]) {
+      store[issuesConfig.repo].issues[id] = 1;
+      // todo:这里正常的body.match为null
+      // const url = body.match(/<a.+?>(.+)<\/a>/)[1];
       notes.push({
-        title: `${title} @reading`,
-        note: `${url}`,
+        title: `${title} @${issuesConfig.repo}`,
+        note: `${body}`,
       });
     }
   });
