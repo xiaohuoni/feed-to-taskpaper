@@ -4,6 +4,15 @@ module.exports = {
   taskpaperPath: '',
   // github token
   githubToken: '',
+  issuesConfig: {
+    owner: 'sorrycc',
+    repo: 'reading',
+    state: 'open',
+  },
+  starredConfig: {
+    username: 'sorrycc',
+    per_page: 20,
+  },
   // twitter 配置
   twitterConfig: {
     consumer_key: '',
